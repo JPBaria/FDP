@@ -1,0 +1,59 @@
+grpto(){
+mrpto=$(dialog --stdout --title "Gerenciamento de Pacotes"\
+	    --menu "Escolha uma opção" 0 0 0 	\
+1 "Instalar Pacote"		 \
+2 "Desinstalar Pacote"		 \
+3 "Voltar")
+
+case $mrpto in
+
+1) ipct ;;
+2) dpct ;;
+3) volu ;;
+esac
+}
+
+ipct() {
+	insp=$(dialog --stdout	\
+	--inputbox "Digite o nome do pacote a ser instalado" 0 50)
+		if (( $? == 0 )); then
+			if [ -z $insp ]; then
+				dialog --aspect 40 --backtitle "Atenção" --msgbox "Digite o nome do Pacote!" 0 0 
+				ipct
+			else
+				apt-get install $insp
+				t=$?
+				if (( $t != 0 )); then
+					dialog --aspect 40 --backtitle "Atenção" --msgbox "[ERROR] Algo deu errado!" 0 0 
+					grpto
+				else
+					dialog --aspect 40 --backtitle "Atenção" --msgbox "Pacote instalado com sucesso!" 0 0 
+					grpto
+				fi
+			fi
+		else
+			grpto
+		fi
+}
+
+dpct() {
+	delp=$(dialog --stdout	\
+	--inputbox "Digite o nome do digite o nome do pacote que sera desinstalado" 0 50)
+		if (( $? == 0 )); then
+			if [ -z $delp ]; then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Digite o nome do Pacote!" 0 0 
+				dpct
+			else
+				apt-get remove $delp
+				if (( $? != 0 )); then
+					dialog --aspect 40 --backtitle "Atencao" --msgbox "[ERROR] Algo deu errado!" 0 0 
+					grpto
+				else
+					dialog --aspect 40 --backtitle "Atencao" --msgbox "Pacote desinstalado com sucesso!" 0 0 
+					grpto
+				fi
+			fi
+		else
+			grpto
+		fi
+}
